@@ -45,6 +45,7 @@ INSTALLED_APPS = [
     'apps.users',
     'apps.organizations',
     'apps.common',
+    'apps.departments',
 ]
 
 
