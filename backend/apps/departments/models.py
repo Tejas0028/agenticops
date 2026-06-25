@@ -39,7 +39,7 @@ class DepartmentMembership(TimeStampedModel):
     organization_membership = models.ForeignKey(
         Membership,
         on_delete=models.CASCADE,
-        related_name="department_membership"
+        related_name="department_memberships"
     )
 
     role = models.CharField(
