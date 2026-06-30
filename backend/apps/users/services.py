@@ -1,5 +1,8 @@
-from django.contrib.auth import get_user_model
+from django.contrib.auth import get_user_model, authenticate
 from django.db import transaction
+
+from rest_framework_simplejwt.tokens import RefreshToken
+from rest_framework import serializers
 
 
 User = get_user_model()
@@ -41,3 +44,37 @@ class UserRegistrationService:
         )
 
         return user
+    
+
+class AuthenticationService:
+    """
+    Handles user authentication and JWT token generation.
+    """
+    @staticmethod
+    def login(
+        *,
+        email: str,
+        password: str,
+    ) -> dict:
+        
+        user = authenticate(
+            email=email,
+            password=password,
+        )
+
+        if user is None:
+            raise serializers.ValidationError(
+                {
+                    "detail": "Invalid email or password."
+                }
+            )
+        
+        refresh = RefreshToken.for_user(user)
+        access = refresh.access_token
+
+        return {
+            "user": user,
+            "refresh": str(refresh),
+            "access": str(access),
+        }
+

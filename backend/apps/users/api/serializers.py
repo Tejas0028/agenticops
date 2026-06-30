@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from rest_framework import serializers
 
-from apps.users.services import UserRegistrationService
+from apps.users.services import UserRegistrationService, AuthenticationService
 
 
 User = get_user_model()
@@ -42,3 +42,17 @@ class UserSerializer(serializers.ModelSerializer):
             "last_name",
         )
         read_only_fields = fields
+
+
+class LoginSerializer(serializers.Serializer):
+    email = serializers.EmailField()
+    password = serializers.CharField(
+        write_only=True,
+        style={"input_type": "password"}
+    )
+
+    def validate(self, attrs):
+        return AuthenticationService.login(
+            email=attrs["email"],
+            password=attrs["password"],
+        )
