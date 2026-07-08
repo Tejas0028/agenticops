@@ -42,7 +42,13 @@ class Membership(TimeStampedModel):
     )
 
     class Meta:
-        unique_together = ("user", "organization")
+        # unique_together = ("user", "organization")
+        constraints = [
+            models.UniqueConstraint(
+                fields=["user", "organization"],
+                name="unique_user_organization_membership",
+            )
+        ]
 
     def __str__(self):
         return f"{self.user} - {self.organization}"

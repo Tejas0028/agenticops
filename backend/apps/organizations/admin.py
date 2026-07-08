@@ -13,6 +13,11 @@ class OrganizationAdmin(admin.ModelAdmin):
         "created_at",
     )
 
+    list_display_links = (
+        "id",
+        "name",
+    )
+
     search_fields = ("name",)
 
 
@@ -23,4 +28,9 @@ class MembershipAdmin(admin.ModelAdmin):
         "user",
         "organization",
         "role",
+    )
+
+    list_display_links = (
+        "id",
+        "user",
     )
