@@ -11,7 +11,7 @@ User = get_user_model()
 
 
 @pytest.mark.django_db
-def test_list_organizations_successfully(authenticated_client):
+def test_list_organizations_successfully(authenticated_client, user):
     org1 = Organization.objects.create(
         name="Beta",
         slug="beta",
@@ -23,13 +23,13 @@ def test_list_organizations_successfully(authenticated_client):
     )
 
     Membership.objects.create(
-        user = authenticated_client.user,
+        user =user,
         organization=org1,
         role=Membership.Role.OWNER,
     )
 
     Membership.objects.create(
-        user=authenticated_client.user,
+        user=user,
         organization=org2,
         role=Membership.Role.OWNER,
     )
@@ -48,14 +48,14 @@ def test_list_organizations_successfully(authenticated_client):
 
 
 @pytest.mark.django_db
-def test_list_organizations_only_returns_users_organizations(authenticated_client):
+def test_list_organizations_only_returns_users_organizations(authenticated_client, user):
     my_org = Organization.objects.create(
         name="AgenticOps",
         slug="agentic-ops",
     )
 
     Membership.objects.create(
-        user=authenticated_client.user,
+        user=user,
         organization=my_org,
         role=Membership.Role.OWNER,
     )

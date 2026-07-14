@@ -2,7 +2,6 @@ from django.db import models
 from apps.common.models import TimeStampedModel
 from apps.organizations.models import Organization,Membership
 
-from django.conf import settings
 from django.core.exceptions import ValidationError
 
 
@@ -19,7 +18,15 @@ class Department(TimeStampedModel):
 
     class Meta:
         db_table = "departments"
-        unique_together = ("organization", "name")
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "organization",
+                    "name",
+                ],
+                name="unique_department_name_per_organization"
+            )
+        ]
     
     def __str__(self):
         return f"{self.organization.name} - {self.name}"
@@ -33,7 +40,7 @@ class DepartmentMembership(TimeStampedModel):
     department = models.ForeignKey(
         Department,
         on_delete=models.CASCADE,
-        related_name="department_membership"
+        related_name="memberships"
     )
 
     organization_membership = models.ForeignKey(
@@ -49,10 +56,16 @@ class DepartmentMembership(TimeStampedModel):
     )
 
     class Meta:
-        unique_together=(
-            "department",
-            "organization_membership",
-        )
+        db_table = "department_memberships"
+        constraints = [
+            models.UniqueConstraint(
+                fields=[
+                    "department",
+                    "organization_membership",
+                ],
+                name="unique_department_membership"
+            )
+        ]
 
     def clean(self):
         if(
@@ -69,6 +82,6 @@ class DepartmentMembership(TimeStampedModel):
 
     def __str__(self):
         return (
-            f"{self.organization_membership.user.username}"
+            f"{self.organization_membership.user.email}"
             f" - {self.department.name}"
         )

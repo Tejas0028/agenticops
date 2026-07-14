@@ -7,7 +7,7 @@ from apps.organizations.models import Organization, Membership
 
 
 @pytest.mark.django_db
-def test_create_organization_succesfully(authenticated_client):
+def test_create_organization_succesfully(authenticated_client, user):
     payload = {
         "name": "AgenticOps",
         "description": "AI-powered operations platform",
@@ -35,7 +35,7 @@ def test_create_organization_succesfully(authenticated_client):
         organization=organization,
     )
 
-    assert membership.user == authenticated_client.user
+    assert membership.user == user
     assert membership.role == Membership.Role.OWNER
 
 

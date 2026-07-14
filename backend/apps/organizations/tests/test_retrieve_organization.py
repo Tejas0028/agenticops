@@ -10,7 +10,7 @@ User = get_user_model()
 
 
 @pytest.mark.django_db
-def test_retrieve_organization_successfully(authenticated_client):
+def test_retrieve_organization_successfully(authenticated_client, user):
     org = Organization.objects.create(
         name = "AgenticOps",
         slug="agentic-slug",
@@ -18,7 +18,7 @@ def test_retrieve_organization_successfully(authenticated_client):
     )
 
     Membership.objects.create(
-        user = authenticated_client.user,
+        user = user,
         organization = org,
         role = Membership.Role.OWNER,
     )

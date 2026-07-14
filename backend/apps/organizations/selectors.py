@@ -1,7 +1,7 @@
 from django.contrib.auth import get_user_model
 from django.shortcuts import get_object_or_404
 
-from apps.organizations.models import Organization
+from apps.organizations.models import Organization,Membership
 
 User = get_user_model()
 
@@ -23,6 +23,22 @@ class OrganizationSelector:
             )
             .order_by("name")
         )
+    
+
+    @staticmethod
+    def list_manageable_organizations(
+        *,
+        user,
+    ):
+        return Organization.objects.filter(
+            memberships__user=user,
+            memberships__role__in=[
+                Membership.Role.OWNER,
+                Membership.Role.ADMIN,
+            ],
+            is_active=True,
+        ).distinct()
+        
     
 
     @staticmethod
